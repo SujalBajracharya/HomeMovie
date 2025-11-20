@@ -11,6 +11,7 @@ import itemReducer from "./redux/ItemReducer";
 import cartReducer from "./redux/CartReducer";
 import { Provider } from "react-redux";
 import MyRoutes from "./MyRoutes";
+import userReducer from "./redux/UserReducer";
 
 
 
@@ -18,6 +19,7 @@ function App() {
   const rootReducer = combineReducers({
     itemStore: itemReducer,
     cartStore: cartReducer,
+    userStore: userReducer,
   });
 
   const persistConfig = {
