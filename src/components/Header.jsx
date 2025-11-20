@@ -16,7 +16,7 @@ const Header = () => {
 
         {/* Logo */}
         <div className="text-2xl font-bold text-primary cursor-pointer">
-          Sujal's Movie House
+          MovieHouse
         </div>
 
         {/* Desktop Menu */}
