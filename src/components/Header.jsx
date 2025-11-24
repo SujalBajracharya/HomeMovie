@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiHome, FiShoppingCart, FiLogIn, FiUserPlus, FiMenu, FiX } from "react-icons/fi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace with actual auth
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {cart_items} = useSelector((store) => store.cartStore);
+  const loggedInUser = useSelector((store) => store.userStore.loggedInUser);
 
   let length =cart_items.length;
 
@@ -39,7 +42,7 @@ const Header = () => {
             </Link>
           </li>
 
-          {!isLoggedIn && (
+          {!loggedInUser?.username && !loggedInUser?.email && (
             <>
               <li>
                 <Link 
@@ -61,15 +64,18 @@ const Header = () => {
             </>
           )}
 
-          {isLoggedIn && (
-            <li>
-              <button
-                onClick={() => setIsLoggedIn(false)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-              >
-                Logout
-              </button>
-            </li>
+          {(loggedInUser?.username || loggedInUser?.email) && (
+            <>
+              <li className="text-gray-700">Hello, {loggedInUser.username || loggedInUser.email}</li>
+              <li>
+                <button
+                  onClick={() => { dispatch({ type: "LOGOUT" }); navigate('/'); }}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                >
+                  Logout
+                </button>
+              </li>
+            </>
           )}
         </ul>
 
@@ -102,7 +108,7 @@ const Header = () => {
             <FiShoppingCart size={20} /> Cart
           </Link>
 
-          {!isLoggedIn && (
+          {!loggedInUser?.username && !loggedInUser?.email && (
             <>
               <Link
                 to="/login"
@@ -122,11 +128,12 @@ const Header = () => {
             </>
           )}
 
-          {isLoggedIn && (
+          {(loggedInUser?.username || loggedInUser?.email) && (
             <button
               onClick={() => {
-                setIsLoggedIn(false);
+                dispatch({ type: "LOGOUT" });
                 setIsOpen(false);
+                navigate('/');
               }}
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
             >
