@@ -10,13 +10,13 @@ const MovieCard = ({ movie }) => {
       />
 
       <div className="p-4">
-        <h2 className="text-lg font-semibold mb-2">{movie.primaryTitle}</h2>
+        <h2 className="text-lg font-semibold mb-2 text-gray-950">{movie.primaryTitle}</h2>
 
         <p className="text-sm text-gray-600 line-clamp-3">
           {movie.description}
         </p>
 
-        <div className="mt-3 font-semibold">
+        <div className="mt-3 font-semibold text-gray-700">
           ⭐ {movie.averageRating} / 10
         </div>
       </div>

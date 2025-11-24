@@ -102,11 +102,11 @@ const Details = () => {
 
             {/* RIGHT CONTENT */}
             <div className="md:w-2/3 w-full p-6 flex flex-col">
-              <h1 className="text-3xl font-bold mb-2 text-gray-900">
+              <h1 className="text-3xl font-bold mb-2 text-gray-50">
                 {movie.primaryTitle}
               </h1>
 
-              <p className="text-gray-200 mb-4">{movie.description}</p>
+              <p className="text-gray-200 mb-4 italic">{movie.description}</p>
 
               {renderList("Genres", movie.genres)}
               {renderList("Countries", movie.countriesOfOrigin)}

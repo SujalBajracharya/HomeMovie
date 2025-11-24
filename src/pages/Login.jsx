@@ -33,7 +33,7 @@ const Login = () => {
 
   return (
     <div className="p-6 flex justify-center">
-      <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-6 rounded shadow">
+      <form onSubmit={handleSubmit} className="w-full max-w-md bg-gray-900 p-6 rounded shadow">
         <h2 className="text-2xl mb-4">Login</h2>
 
         <label className="block mb-1">Username or Email</label>
