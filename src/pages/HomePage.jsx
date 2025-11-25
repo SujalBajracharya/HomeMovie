@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MovieCard from "../components/MovieCard";
 import { Link } from "react-router-dom";
@@ -6,6 +6,21 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
   let { movies } = useSelector((store) => store.itemStore);
   const dispatch = useDispatch();
+
+  let [search, setSearch] = useState("");
+  let [filteredResults, setFilteredResults] = useState([]);
+
+  useEffect(() => {
+    if (search === "") {
+      setFilteredResults(movies);
+    } else {
+      setFilteredResults(
+        movies.filter((movie) =>
+          movie.primaryTitle.toLowerCase().match(search.toLowerCase())
+        )
+      );
+    }
+  }, [search]);
 
   useEffect(() => {
     if (movies.length <= 0) {
@@ -33,10 +48,18 @@ const HomePage = () => {
   return (
     <>
       <div className="p-6">
+        <div className="mx-auto w-7/10">
+          <input
+          onKeyUp={e=> setSearch(e.target.value)}
+            type="search"
+            className="border border-gray-300 rounded-md p-2 w-7/10 mx-auto block"
+            placeholder="search a movie"
+          />
+        </div>
         <h1 className="text-3xl font-bold mb-6">Top Movies</h1>
 
         <div className="flex flex-wrap gap-6">
-          {movies.map((movie) => (
+          {filteredResults.map((movie) => (
             <Link to={`${movie.id}`}>
               <MovieCard key={movie.id} movie={movie} />
             </Link>
