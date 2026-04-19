@@ -17,162 +17,207 @@ const Details = () => {
   const handleAddRemove = () => {
     if (!movie) return;
     if (inCart) {
-      Swal.fire(
-        "Attention",
-        "This movie is being removed from the Cart",
-        "warning"
-      );
+      Swal.fire({
+        title: "Removed",
+        text: "Removed from your watchlist",
+        icon: "info",
+        background: "#141414",
+        color: "#F0F0F0",
+        confirmButtonColor: "#E50914"
+      });
       dispatch({ type: "REMOVE_FROM_CART", payload: movie.id });
     } else {
-      Swal.fire(
-        "Congrats",
-        "This movie is has been successfully added to the Cart",
-        "success"
-      );
-
+      Swal.fire({
+        title: "Added!",
+        text: "Added to your watchlist",
+        icon: "success",
+        background: "#141414",
+        color: "#F0F0F0",
+        confirmButtonColor: "#E50914"
+      });
       dispatch({ type: "ADD_TO_CART", payload: movie });
     }
   };
 
-  // helper to render array lists
-  const renderList = (label, arr) => {
-    if (!arr || arr.length === 0) return null;
+  if (!movie) {
     return (
-      <div className="mb-3">
-        <div className="text-sm text-gray-200 mb-1">{label}</div>
-        <div className="flex flex-wrap gap-2">
-          {arr.map((item, idx) => (
-            <span key={idx} className="text-xs bg-gray-950 px-2 py-1 rounded">
-              {typeof item === "string"
-                ? item
-                : item?.company || item?.name || JSON.stringify(item)}
-            </span>
-          ))}
+      <div className="min-h-screen bg-background-DEFAULT flex items-center justify-center text-text-primary px-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-4">Movie Not Found</h2>
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-2 bg-brand-red rounded-lg font-bold hover:bg-brand-redHover transition-colors"
+          >
+            Go Back Home
+          </button>
         </div>
       </div>
     );
-  };
-
-  // helper to render single fields
-  const renderField = (label, value) => {
-    if (!value && value !== 0) return null;
-    return (
-      <div className="mb-2">
-        <span className="text-sm text-gray-200 mr-2">{label}:</span>
-        <span className="text-gray-200">{value}</span>
-      </div>
-    );
-  };
+  }
 
   return (
-    <div className="p-6">
-      {movie ? (
-        <div className="max-w-5xl mx-auto bg-gray-800 shadow rounded-lg overflow-hidden">
-          <div className="flex flex-col md:flex-row">
-            {/* LEFT SIDEBAR */}
-            <div className="md:w-1/3 w-full bg-gray-800 p-4 flex-shrink-0">
+    <div className="min-h-screen bg-background-DEFAULT text-text-primary pb-20">
+      {/* HERO BACKDROP */}
+      <div className="relative h-[50vh] lg:h-[70vh] w-full overflow-hidden">
+        <img
+          src={movie.primaryImage}
+          alt={movie.primaryTitle}
+          className="w-full h-full object-cover object-top opacity-30 scale-110 blur-sm"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background-DEFAULT via-background-DEFAULT/60 to-transparent"></div>
+
+        {/* BACK BUTTON */}
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute top-8 left-8 z-20 p-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 hover:bg-white/10 transition-colors group"
+        >
+          <svg className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      </div>
+
+      {/* CONTENT CONTAINER */}
+      <div className="max-w-7xl mx-auto px-6 md:px-12 -mt-40 lg:-mt-64 relative z-10">
+        <div className="flex flex-col lg:flex-row gap-12">
+
+          {/* POSTER ASIDE */}
+          <div className="lg:w-1/3 flex-shrink-0">
+            <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/50 aspect-[2/3] border border-white/5 bg-background-elevated">
               <img
                 src={movie.primaryImage}
                 alt={movie.primaryTitle}
-                className="w-full h-96 object-cover rounded"
+                className="w-full h-full object-cover"
               />
-
-              <div className="mt-4">
-                {renderField("Original Title", movie.originalTitle)}
-                {renderField("Year", movie.startYear)}
-                {renderField("Runtime", movie.runtimeMinutes + " min")}
-                {renderField(
-                  "Rating",
-                  movie.averageRating ? `⭐ ${movie.averageRating} / 10` : null
-                )}
-                {renderField("Votes", movie.numVotes)}
-                {renderField("Metascore", movie.metascore)}
-                {renderField(
-                  "Budget",
-                  movie.budget ? `$${movie.budget.toLocaleString()}` : null
-                )}
-                {renderField(
-                  "Worldwide Gross",
-                  movie.grossWorldwide
-                    ? `$${movie.grossWorldwide.toLocaleString()}`
-                    : null
-                )}
-              </div>
             </div>
 
-            {/* RIGHT CONTENT */}
-            <div className="md:w-2/3 w-full p-6 flex flex-col">
-              <h1 className="text-3xl font-bold mb-2 text-gray-900">
-                {movie.primaryTitle}
-              </h1>
+            <div className="mt-8 space-y-4">
+              <button
+                onClick={handleAddRemove}
+                className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-3 ${inCart
+                    ? "bg-text-disabled text-text-primary hover:bg-gray-700"
+                    : "bg-brand-red text-white hover:bg-brand-redHover shadow-glow"
+                  }`}
+              >
+                {inCart ? (
+                  <>
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    In Watchlist
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                    Add to Watchlist
+                  </>
+                )}
+              </button>
 
-              <p className="text-gray-200 mb-4">{movie.description}</p>
-
-              {renderList("Genres", movie.genres)}
-              {renderList("Countries", movie.countriesOfOrigin)}
-              {renderList("Languages", movie.spokenLanguages)}
-              {renderList("Filming Locations", movie.filmingLocations)}
-              {renderList(
-                "Production Companies",
-                movie.productionCompanies?.map((c) => c.company)
-              )}
-              {renderList("Tags / Interests", movie.interests)}
-              {renderList(
-                "Thumbnails",
-                movie.thumbnails?.map((t) => t.url)
-              )}
-
-              {renderField("Release Date", movie.releaseDate)}
-
-              <div className="mt-6 flex gap-3 flex-wrap">
-                {/* Add / Remove Cart */}
-                <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                  onClick={handleAddRemove}
-                >
-                  {inCart ? "Remove from Cart" : "Add to Cart"}
-                </button>
-
-                {/* Back */}
-                <button
-                  className="px-4 py-2 bg-gray-300 text-black rounded"
-                  onClick={() => navigate(-1)}
-                >
-                  Back
-                </button>
-
-                {/* Trailer */}
+              <div className="grid grid-cols-2 gap-3">
                 {movie.trailer && (
                   <a
                     href={movie.trailer}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-4 py-2 bg-red-600 text-white rounded"
+                    className="flex items-center justify-center gap-2 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-semibold border border-white/10 transition-colors"
                   >
-                    Watch Trailer
+                    Trailer
                   </a>
                 )}
-
-                {/* IMDb Link */}
                 {movie.url && (
                   <a
                     href={movie.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-4 py-2 bg-yellow-500 text-black rounded"
+                    className="flex items-center justify-center gap-2 py-3 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 rounded-xl font-semibold border border-yellow-500/20 transition-colors"
                   >
-                    Open on IMDb
+                    IMDb
                   </a>
                 )}
               </div>
             </div>
           </div>
+
+          {/* INFO SECTION */}
+          <div className="lg:w-2/3 pt-4 lg:pt-12">
+            <div className="flex items-center gap-4 mb-4 flex-wrap">
+              <span className="text-brand-red font-bold text-lg">★ {movie.averageRating}</span>
+              <span className="text-text-secondary">•</span>
+              <span className="text-text-primary font-medium">{movie.startYear}</span>
+              <span className="text-text-secondary">•</span>
+              <span className="text-text-primary font-medium">{movie.runtimeMinutes} min</span>
+              {movie.genres && movie.genres.map(genre => (
+                <span key={genre} className="px-3 py-1 bg-white/10 rounded-full text-xs font-bold uppercase tracking-wider text-text-secondary">
+                  {genre}
+                </span>
+              ))}
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
+              {movie.primaryTitle}
+            </h1>
+
+            <p className="text-text-secondary text-lg md:text-xl leading-relaxed mb-10 max-w-3xl">
+              {movie.description}
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8 border-t border-white/10">
+              {movie.originalTitle && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Original Title</h4>
+                  <p className="text-text-primary font-medium">{movie.originalTitle}</p>
+                </div>
+              )}
+              {movie.releaseDate && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Release Date</h4>
+                  <p className="text-text-primary font-medium">{movie.releaseDate}</p>
+                </div>
+              )}
+              {movie.countriesOfOrigin && movie.countriesOfOrigin.length > 0 && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Origin</h4>
+                  <p className="text-text-primary font-medium">{movie.countriesOfOrigin.join(', ')}</p>
+                </div>
+              )}
+              {movie.spokenLanguages && movie.spokenLanguages.length > 0 && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Languages</h4>
+                  <p className="text-text-primary font-medium">{movie.spokenLanguages.join(', ')}</p>
+                </div>
+              )}
+              {movie.budget && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Budget</h4>
+                  <p className="text-text-primary font-medium">${movie.budget.toLocaleString()}</p>
+                </div>
+              )}
+              {movie.grossWorldwide && (
+                <div>
+                  <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-1">Box Office</h4>
+                  <p className="text-text-primary font-medium">${movie.grossWorldwide.toLocaleString()}</p>
+                </div>
+              )}
+            </div>
+
+            {movie.productionCompanies && movie.productionCompanies.length > 0 && (
+              <div className="mt-8 pt-8 border-t border-white/10">
+                <h4 className="text-text-disabled uppercase text-xs font-black tracking-widest mb-4">Production</h4>
+                <div className="flex flex-wrap gap-4">
+                  {movie.productionCompanies.map((c, idx) => (
+                    <span key={idx} className="bg-background-elevated px-4 py-2 rounded-lg border border-white/5 text-sm font-medium">
+                      {c.company}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
-      ) : (
-        <p className="text-center">Movie not found.</p>
-      )}
+      </div>
     </div>
   );
 };
 
 export default Details;
+

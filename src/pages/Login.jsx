@@ -1,101 +1,70 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { useNavigate, Link } from "react-router-dom";
 
-const Register = () => {
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
+const Login = () => {
+  const [form, setForm] = useState({ usernameOrEmail: "", password: "" });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const users = useSelector((state) => state.userStore.users);
 
   const handleChange = (e) => {
-    setUser({
-      ...user,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const usernameExist = users.find(
-      (member) => member.username === user.username
+    const { usernameOrEmail, password } = form;
+
+    const user = users.find(
+      (u) =>
+        (u.username === usernameOrEmail || u.email === usernameOrEmail) &&
+        u.password === password
     );
 
-    const emailExist = users.find(
-      (member) => member.email === user.email
-    );
-
-    if (usernameExist || emailExist) {
-      Swal.fire("Alert", "Username or Email already exists!", "error");
+    if (!user) {
+      Swal.fire("Error", "Invalid credentials", "error");
       return;
     }
 
-    dispatch({
-      type: "REGISTER",
-      username: user.username,
-      email: user.email,
-      password: user.password,
-    });
-
-    Swal.fire("Success", "User has been registered!", "success");
-
-    setUser({ username: "", email: "", password: "" });
+    dispatch({ type: "LOGIN", payload: { usernameOrEmail, password } });
+    Swal.fire("Success", "Logged in successfully", "success");
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f0f0f] via-[#141414] to-[#0a0a0a] px-4">
 
-      {/* Card */}
+      {/* Auth Card */}
       <div className="w-full max-w-md bg-[#1a1a1a]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
 
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-white tracking-tight">
-            Create Account
+            Welcome Back
           </h2>
           <p className="text-gray-400 text-sm mt-2">
-            Join and start exploring movies
+            Sign in to continue watching
           </p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
 
-          {/* Username */}
+          {/* Username / Email */}
           <div>
             <label className="text-sm text-gray-300 mb-1 block">
-              Username
+              Username or Email
             </label>
             <input
-              type="text"
-              name="username"
-              value={user.username}
+              name="usernameOrEmail"
+              value={form.usernameOrEmail}
               onChange={handleChange}
-              required
-              placeholder="Enter username"
               className="w-full px-4 py-3 rounded-lg bg-[#0f0f0f] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="text-sm text-gray-300 mb-1 block">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={user.email}
-              onChange={handleChange}
+              placeholder="Enter username or email"
               required
-              placeholder="Enter email"
-              className="w-full px-4 py-3 rounded-lg bg-[#0f0f0f] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             />
           </div>
 
@@ -105,13 +74,13 @@ const Register = () => {
               Password
             </label>
             <input
-              type="password"
               name="password"
-              value={user.password}
+              type="password"
+              value={form.password}
               onChange={handleChange}
-              required
-              placeholder="Enter password"
               className="w-full px-4 py-3 rounded-lg bg-[#0f0f0f] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="Enter password"
+              required
             />
           </div>
 
@@ -120,21 +89,21 @@ const Register = () => {
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all duration-200 text-white font-semibold py-3 rounded-lg shadow-lg"
           >
-            Create Account
+            Sign In
           </button>
 
         </form>
 
-        {/* Footer */}
+        {/* Footer hint */}
         <p className="text-center text-xs text-gray-500 mt-6">
-          By registering, you agree to our terms
+          Secure login for movie experience
         </p>
         <p className="text-center text-xs text-gray-500 mt-6">
           Don't have an account? <Link
-            to="/login"
+            to="/register"
             className="text-blue-500 cursor-pointer hover:underline"
           >
-            Sign in
+            Sign up
           </Link>
         </p>
 
@@ -143,4 +112,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
